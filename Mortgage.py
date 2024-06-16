@@ -58,6 +58,7 @@ class Amortization:
               "Interests": self.Interests[:t+1], 
               "Principal": self.Principal[:t+1], 
               "Balance": self.Balance[:t+1]}
+        self.data=data
         df=pd.DataFrame(data).round(3)
         print(df)
 
