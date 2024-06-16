@@ -2,44 +2,69 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 
-#Calculate Payment amount if n is known:
-Balance=[30000]
-Rate=0.03/12
-Interests=[0]
-Principle=[0]
-n=25
-t=0
-Time = list(range(0, n+1, 1))
+class Amortization:
+    def __init__(self, Balance:list, Rate:float, N=25, Payment=[0],):
+        self.Balance=Balance
+        self.Rate=Rate
+        self.N=N
+        self.Interests=[0]
+        self.Principal=[0]
+        self.Payment=Payment
+    
+    def CalcPayment(self, N):
+        t=0
+        Time = list(range(0, N+1, 1))
+        L=self.Balance[0]*self.Rate*(1+self.Rate)**N/((1+self.Rate)**N - 1)
 
-Payment=Balance[0]*Rate*(1+Rate)**n/((1+Rate)**n - 1)
+        while self.Balance[-1] >=0:
+            self.Interests.append(self.Balance[t]*self.Rate)
+            self.Principal.append(L-self.Interests[t+1])
+            self.Balance.append(self.Balance[t]-self.Principal[t+1])
+            t+=1
+        self.Payment=self.Payment+[L]*t
+        self.printAmrt(t, Time)
+        
+    def CalcTime(self):
+        t=0
+        Time = [0]
+        
+        if(self.Payment==[0]):
+            error_message="Payment amount cannot be 0."
+            raise ValueError(error_message)
+        elif(self.Payment[0]!=0):
+            self.Payment=[0]+self.Payment
+        
+        while self.Balance[-1] >0 and t<(len(self.Payment)-1):
+            self.Interests.append(self.Balance[t]*self.Rate)
+            if(self.Payment[t+1]<self.Interests[t+1]):
+                error_message="Payment amount cannot be less than the interest"
+                raise ValueError(error_message)
+            
+            if(self.Balance[t]>=self.Principal[t]):
+                pass
+            else:
+                self.Payment[t+1]=self.Balance[t]+self.Interests[t+1]
+                
+            self.Principal.append(self.Payment[t+1]-self.Interests[t+1])
+            self.Balance.append(self.Balance[t]-self.Principal[t+1])
+                
+            t+=1
+            Time.append(t)
+        self.printAmrt(t, Time)
+    
+    def printAmrt(self,t,Time):
+        data={"Time": Time[:t+1], 
+              "Payment": self.Payment[:t+1], 
+              "Interests": self.Interests[:t+1], 
+              "Principal": self.Principal[:t+1], 
+              "Balance": self.Balance[:t+1]}
+        df=pd.DataFrame(data).round(3)
+        print(df)
 
-while Balance[-1] >=0:
-    Interests.append(Balance[t]*Rate)
-    Principle.append(Payment-Interests[t+1])
-    Balance.append(Balance[t]-Principle[t+1])
-    t+=1
-Payment=[0]+[Payment]*t
+        #fig=px.line(df, x="Time", y="Balance")
+        #fig.show()
 
-#Customized payment schedule and estimate time needed:
-Balance=[30000]
-Rate=0.03/12
-Payment=[0]+[664.03]*48
-Interests=[0]
-Principle=[0]
-t=0
-Time = [0]
 
-while Balance[-1] >=0 and t<=len(Payment):
-    Interests.append(Balance[t]*Rate)
-    Principle.append(Payment[t+1]-Interests[t+1])
-    Balance.append(Balance[t]-Principle[t+1])
-    t+=1
-    Time.append(t)
 
-data={"Time": Time[:t+1], "Payment": Payment[:t+1], "Interests": Interests[:t+1], "Principle": Principle[:t+1], "Balance": Balance[:t+1]}
-df=pd.DataFrame(data).round(3)
-print(df)
-
-fig=px.line(df, x="Time", y="Balance")
-fig.show()
-
+Payment=[0, 12]
+len(Payment)-1
