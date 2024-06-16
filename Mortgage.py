@@ -62,5 +62,3 @@ class Amortization:
         self.data=df
         print(df)
 
-        #fig=px.line(df, x="Time", y="Balance")
-        #fig.show()
