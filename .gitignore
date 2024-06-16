@@ -1,1 +1,10 @@
 MortgageVenv/
+
+# macOS
+.DS_Store
+
+#caches
+**/__pycache__
+
+# setting
+.vscode
