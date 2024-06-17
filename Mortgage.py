@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import plotly.express as px
+from functools import reduce
 
 class Amortization:
     def __init__(self, Balance:list, Rate:list, N=25, Payment=[0],):
@@ -88,3 +89,20 @@ class Amortization:
         # If t is greater than the last start value, return the last rate
         return Rate[-1][1]
 
+def plotResult(dfs:dict):
+    df_join=reduce(lambda left, right: 
+        pd.merge(left[["Time", "Balance", "Interests"]], 
+                 right[["Time", "Balance", "Interests"]], 
+                 on="Time", how="outer"), dfs.values())
+
+    df_join_Bal=df_join[[col for col in df_join.columns if "Balance" in col or "Time" in col]]
+    df_join_Bal=df_join_Bal.melt(id_vars="Time", var_name="Variable", value_name="Value")
+    fig=px.line(df_join_Bal, x="Time", y="Value", color="Variable", labels={'value': "Balance", 'x':"Month"})
+    fig.show()
+    
+    df_join_Int=df_join[[col for col in df_join.columns if "Interests" in col or "Time" in col]]
+    df_join_Int.iloc[:,1:]=df_join_Int.iloc[:,1:].cumsum()
+    df_join_Int=df_join_Int.melt(id_vars="Time", var_name="Variable", value_name="Value")
+    fig=px.line(df_join_Int, x="Time", y="Value", color="Variable", labels={'Value': "Cumulative Interests", 'x':"Month"})
+    fig.show()
+    
