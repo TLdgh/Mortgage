@@ -4,8 +4,9 @@ import plotly.express as px
 from functools import reduce
 
 class Amortization:
-    def __init__(self, Balance:list, Rate:list, N=25, Payment=[0],):
+    def __init__(self, Balance:list, Rate:list, N=25, Payment=[0], BalancePctPay=None):
         self.Balance=Balance
+        self.BalancePctPay=BalancePctPay
         self.Rate=Rate
         self.N=N
         self.Interests=[0]
@@ -56,10 +57,17 @@ class Amortization:
                 error_message="Payment amount cannot be less than the interest"
                 raise ValueError(error_message)
             
+            if self.BalancePctPay is not None:
+                if isinstance(self.BalancePctPay, float):
+                    self.Payment[t+1]=self.Payment[t+1]+self.Balance[t]*self.BalancePctPay
+                else:
+                    raise ValueError("BalancePctPay must be a float")
+            
             if(self.Balance[t]>=self.Principal[t]):
                 pass
             else:
                 self.Payment[t+1]=self.Balance[t]+self.Interests[t+1]
+            
                 
             self.Principal.append(self.Payment[t+1]-self.Interests[t+1])
             self.Balance.append(self.Balance[t]-self.Principal[t+1])
