@@ -67,8 +67,9 @@ class Amortization:
             t+=1
             Time.append(t)
         
+        self.printAmrt(t+1, Time)        
         if(self.Balance[-1]!=0):print("WARNING: Your balance is not paid out, please add more payment terms.")
-        self.printAmrt(t+1, Time)
+
     
     def printAmrt(self,t,Time):
         data={"Time": Time, 
