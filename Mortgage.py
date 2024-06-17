@@ -80,7 +80,7 @@ class Amortization:
 
     
     def printAmrt(self,t,Time):
-        data={"Time": Time, 
+        data={"Month": Time, 
               "IntRate": self.IntRate[:t],
               "Payment": self.Payment[:t], 
               "Interests": self.Interests[:t], 
@@ -101,18 +101,18 @@ class Amortization:
 
 def plotResult(dfs:dict):
     df_join=reduce(lambda left, right: 
-        pd.merge(left[["Time", "Balance", "Interests"]], 
-                 right[["Time", "Balance", "Interests"]], 
-                 on="Time", how="outer"), dfs.values())
+        pd.merge(left[["Month", "Balance", "Interests"]], 
+                 right[["Month", "Balance", "Interests"]], 
+                 on="Month", how="outer"), dfs.values())
 
-    df_join_Bal=df_join[[col for col in df_join.columns if "Balance" in col or "Time" in col]]
-    df_join_Bal=df_join_Bal.melt(id_vars="Time", var_name="Variable", value_name="Value")
-    fig=px.line(df_join_Bal, x="Time", y="Value", color="Variable", labels={'value': "Balance", 'x':"Month"})
+    df_join_Bal=df_join[[col for col in df_join.columns if "Balance" in col or "Month" in col]]
+    df_join_Bal=df_join_Bal.melt(id_vars="Month", var_name="Variable", value_name="Value")
+    fig=px.line(df_join_Bal, x="Month", y="Value", color="Variable", labels={'value': "Balance", 'x':"Month"})
     fig.show()
     
-    df_join_Int=df_join[[col for col in df_join.columns if "Interests" in col or "Time" in col]]
+    df_join_Int=df_join[[col for col in df_join.columns if "Interests" in col or "Month" in col]]
     df_join_Int.iloc[:,1:]=df_join_Int.iloc[:,1:].cumsum()
-    df_join_Int=df_join_Int.melt(id_vars="Time", var_name="Variable", value_name="Value")
-    fig=px.line(df_join_Int, x="Time", y="Value", color="Variable", labels={'Value': "Cumulative Interests", 'x':"Month"})
+    df_join_Int=df_join_Int.melt(id_vars="Month", var_name="Variable", value_name="Value")
+    fig=px.line(df_join_Int, x="Month", y="Value", color="Variable", labels={'Value': "Cumulative Interests", 'x':"Month"})
     fig.show()
     
