@@ -56,3 +56,10 @@ def test7():
     
     assert data is not None and len(data["Time"]) == 25 and round(data["Payment"][13],3)==10000.000, "Failed to generate data frame."
 
+def test8():
+    newPay=[1179.69]*6+[1179.69*2]*200
+    result=Amortization(Balance=[200000], Rate=[[1, 0.0509/12], [12, 0.045/12]], Payment=newPay, BalancePctPay=0.085/12)
+    result.CalcTime()
+    data=result.data
+    
+    assert data is not None and data["Balance"][75]==5289.103, "Test failed."
