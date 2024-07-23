@@ -100,10 +100,13 @@ class Amortization:
         return Rate[-1][1]
 
 def plotResult(dfs:dict):
-    df_join=reduce(lambda left, right: 
-        pd.merge(left[["Month", "Balance", "Interests"]], 
-                 right[["Month", "Balance", "Interests"]], 
-                 on="Month", how="outer"), dfs.values())
+    
+    df_join=None
+    for key, df in dfs.items():
+        if df_join is None:
+            df_join=df
+        else:
+            df_join=pd.merge(df_join, df, on="Month", how="outer")
 
     df_join_Bal=df_join[[col for col in df_join.columns if "Balance" in col or "Month" in col]]
     df_join_Bal=df_join_Bal.melt(id_vars="Month", var_name="Variable", value_name="Value")
