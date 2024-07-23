@@ -106,6 +106,7 @@ def plotResult(dfs:dict):
         if df_join is None:
             df_join=df
         else:
+            df.columns=[f"{col}_{key}" if col!="Month" else col for col in df.columns]
             df_join=pd.merge(df_join, df, on="Month", how="outer")
 
     df_join_Bal=df_join[[col for col in df_join.columns if "Balance" in col or "Month" in col]]
