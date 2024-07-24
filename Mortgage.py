@@ -114,9 +114,15 @@ def plotResult(dfs:dict):
     fig=px.line(df_join_Bal, x="Month", y="Value", color="Variable", labels={'value': "Balance", 'x':"Month"})
     fig.show()
     
+    df_join_Pay=df_join[[col for col in df_join.columns if "Payment" in col or "Month" in col]]
+    df_join_Pay=df_join_Pay.melt(id_vars="Month", var_name="Variable", value_name="Value")
+    fig=px.line(df_join_Pay, x="Month", y="Value", color="Variable", labels={'value': "Payment", 'x':"Month"})
+    fig.show()
+    
     df_join_Int=df_join[[col for col in df_join.columns if "Interests" in col or "Month" in col]]
     df_join_Int.iloc[:,1:]=df_join_Int.iloc[:,1:].cumsum()
     df_join_Int=df_join_Int.melt(id_vars="Month", var_name="Variable", value_name="Value")
     fig=px.line(df_join_Int, x="Month", y="Value", color="Variable", labels={'Value': "Cumulative Interests", 'x':"Month"})
     fig.show()
+    
     
