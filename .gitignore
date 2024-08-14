@@ -8,3 +8,6 @@ MortgageVenv/
 
 # setting
 .vscode
+
+# data
+*.xlsx

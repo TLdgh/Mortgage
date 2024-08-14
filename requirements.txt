@@ -5,3 +5,5 @@ plotly
 ipykernel
 pytest
 nbformat
+numpy_financial
+openpyxl
